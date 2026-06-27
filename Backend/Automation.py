@@ -322,7 +322,7 @@ def _llm_chat(text: str) -> str:
         import os
         client = Groq(api_key=os.getenv("GROQ_API_KEY", ""))
         resp   = client.chat.completions.create(
-            model="llama3-8b-8192",
+            model="llama-3.3-70b-versatile",
             messages=[
                 {"role": "system", "content":
                     "You are Jarvis AI 2.0, a helpful AI assistant. "

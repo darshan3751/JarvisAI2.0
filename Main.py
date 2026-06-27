@@ -48,7 +48,7 @@ def process_command(text: str) -> bool:
 
     # Decision layer
     decision = decide(text)
-    print(f"[Brain] Decision → {decision}")
+    print(f"[Brain] Decision -> {decision}")
 
     # Execute & get spoken reply
     reply = execute(decision, text)
