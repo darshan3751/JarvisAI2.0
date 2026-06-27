@@ -98,13 +98,27 @@ def _open_app(name: str) -> str:
 
 def _close_app(name: str) -> str:
     name = name.strip().lower()
+
+    if "camera" in name or "gesture" in name:
+        try:
+            from Backend.GestureControl import StopGestureMode, IsGestureRunning
+            if IsGestureRunning():
+                StopGestureMode()
+        except:
+            pass
+        os.system("taskkill /f /im WindowsCamera.exe >nul 2>&1")
+        return "Closed camera/gesture mode."
+
     aliases = {
         "chrome":   "chrome.exe",
+        "google":   "chrome.exe",
+        "browser":  "chrome.exe",
         "firefox":  "firefox.exe",
         "notepad":  "notepad.exe",
         "spotify":  "Spotify.exe",
         "discord":  "Discord.exe",
         "vs code":  "Code.exe",
+        "edge":     "msedge.exe",
     }
     exe = aliases.get(name, name + ".exe")
     os.system(f"taskkill /f /im {exe} >nul 2>&1")
