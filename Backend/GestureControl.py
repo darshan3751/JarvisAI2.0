@@ -119,18 +119,20 @@ class GestureController:
         if self._run: return
         self._run=True; self._on=True
         self._t=threading.Thread(target=self._loop,daemon=True); self._t.start()
-        print("[Gesture] Started – SNAP to toggle on/off.")
+        print("[Gesture] Started - SNAP to toggle on/off.")
 
     def stop(self): self._run=False
     def is_running(self): return self._run
-    def enable(self):  self._on=True;  self._flash("✅  Gesture ON")
-    def disable(self): self._on=False; self._flash("🚫  Gesture OFF")
+    def enable(self):  self._on=True;  self._flash("Gesture ON")
+    def disable(self): self._on=False; self._flash("Gesture OFF")
     def toggle(self):
         if self._on: self.disable()
         else:        self.enable()
 
     def _flash(self, m, s=1.6):
-        self._msg=m; self._mend=time.time()+s; print(f"[Gesture] {m}")
+        self._msg=m; self._mend=time.time()+s
+        safe_msg = m.encode("ascii", errors="ignore").decode("ascii").strip()
+        print(f"[Gesture] {safe_msg}")
 
     def _loop(self):
         bk = cv2.CAP_DSHOW if sys.platform=="win32" else cv2.CAP_ANY
@@ -184,36 +186,36 @@ class GestureController:
         now=time.time(); n=sum(fu); h,w,_=frame.shape
         self._arc.append((int(lm[8].x*w), int(lm[8].y*h)))
 
-        # ✌ Two fingers → play/pause
+        # Two fingers -> play/pause
         if fu[1] and fu[2] and not fu[3] and not fu[4]:
             if now-self._tp>self.CP:
-                pyautogui.press("playpause"); self._tp=now; self._flash("⏯  Play/Pause")
+                pyautogui.press("playpause"); self._tp=now; self._flash("Play/Pause")
             return
 
-        # ✋ Open palm → scroll
+        # Open palm -> scroll
         if n==5:
             wy=lm[0].y
             vel=abs(wy-self._py) if self._py else 0.
             self._py=wy
             step=self.SCROLL_F if vel>self.VT else self.SCROLL_N
             if now-self._ts>self.CS:
-                if _palm_up(lm): pyautogui.scroll(step);  self._flash(f"▲  Scroll {step}px")
-                else:            pyautogui.scroll(-step); self._flash(f"▼  Scroll {step}px")
+                if _palm_up(lm): pyautogui.scroll(step);  self._flash(f"Scroll Up {step}px")
+                else:            pyautogui.scroll(-step); self._flash(f"Scroll Down {step}px")
                 self._ts=now
             return
 
         self._py=None
 
-        # ☝ Index only → volume arc
+        # Index only -> volume arc
         if fu[1] and not fu[2] and not fu[3] and not fu[4]:
             arc=_signed_arc(list(self._arc))
             if abs(arc)>self.AT and now-self._tv>self.CV:
-                if arc>0: set_volume_delta(+self.VS); self._flash(f"🔊 +{self.VS}%")
-                else:     set_volume_delta(-self.VS); self._flash(f"🔇 -{self.VS}%")
+                if arc>0: set_volume_delta(+self.VS); self._flash(f"Volume +{self.VS}%")
+                else:     set_volume_delta(-self.VS); self._flash(f"Volume -{self.VS}%")
                 self._arc.clear(); self._tv=now
             return
 
-        # ✊ Fist → clear
+        # Fist -> clear
         if n==0: self._arc.clear(); self._py=None
 
     def _hud(self, frame):
@@ -221,7 +223,7 @@ class GestureController:
         on=self._on
         c=(0,200,60) if on else (50,50,220)
         cv2.rectangle(frame,(0,0),(w,28),(15,15,15),-1)
-        cv2.putText(frame,f"Gesture {'● ON' if on else '○ OFF'}  |  Snap=toggle  |  Q=quit",
+        cv2.putText(frame,f"Gesture {'ON' if on else 'OFF'}  |  Snap=toggle  |  Q=quit",
             (6,19),cv2.FONT_HERSHEY_SIMPLEX,0.43,c,1,cv2.LINE_AA)
         if now<self._mend:
             fade=min(1.,(self._mend-now)/0.5)
