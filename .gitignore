@@ -26,3 +26,6 @@ Desktop.ini
 Data/Notes.txt
 Data/Screenshots/*
 !Data/Screenshots/.gitkeep
+
+# Archive / Zip files
+*.zip
