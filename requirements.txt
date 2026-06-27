@@ -1,0 +1,32 @@
+# Jarvis AI 2.0 – Requirements
+# pip install -r requirements.txt
+
+# Core
+groq>=0.8.0
+python-dotenv>=1.0.0
+
+# Speech
+SpeechRecognition>=3.10.0
+pyttsx3>=2.90
+gTTS>=2.4.0
+pygame>=2.5.0
+pyaudio>=0.2.13
+
+# Gesture
+mediapipe>=0.10.0
+opencv-python>=4.8.0
+pyautogui>=0.9.54
+
+# System control (Windows)
+pycaw>=20181227
+comtypes>=1.2.0
+screen-brightness-control>=0.16.0
+
+# YouTube
+youtube-search-python>=1.6.6
+
+# GUI
+customtkinter>=5.2.0
+
+# Utilities
+requests>=2.31.0
